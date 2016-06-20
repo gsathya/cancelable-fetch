@@ -6,17 +6,30 @@
 </head>
 <body>
   <script>
-    var result = fetch('https://api.github.com')
+    var cancel, cancelation
 
-    result.then(function(response) {
-      console.log('response', response)
-      console.log('header', response.headers.get('Content-Type'))
-      return response.text()
-    }).then(function(text) {
-      console.log('got text', text)
-    }).catch(function(ex) {
-      console.log('failed', ex)
-    })
+    function start() {
+      cancelation = new Promise(resolve => cancel = resolve);
+      var result = fetch('https://api.github.com', {cancelation})
+      result.then(function(response) {
+        console.log('response', response)
+        console.log('header', response.headers.get('Content-Type'))
+        return response.text()
+      }).then(function(text) {
+        console.log('got text', text)
+      }).catch(function(ex) {
+        if(!(ex instanceof CancelError)) {
+          console.log('failed', ex)
+        }
+      })
+
+      cancelation.then(function() {
+        console.log('request cancelled');
+      })
+    }
+
   </script>
+  <button id="start" onclick='start()'>Start</button>
+  <button id="cancel" onclick='if(cancel) cancel()'>Cancel</button>
 </body>
 </html>
