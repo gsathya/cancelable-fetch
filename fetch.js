@@ -1,9 +1,19 @@
 (function(self) {
   'use strict';
 
-  if (self.fetch) {
-    return
+  // if (self.fetch) {
+  //   return
+  // }
+
+  function CancelError(msg) {
+    this.name = 'CancelError'
+    this.msg = msg || this.name
+    this.stack = (new Error()).stack
   }
+
+  CancelError.prototype = Object.create(Error.prototype)
+  CancelError.prototype.constructor = CancelError;
+  self.CancelError = CancelError;
 
   var support = {
     searchParams: 'URLSearchParams' in self,
@@ -266,6 +276,7 @@
       }
       this.url = input.url
       this.credentials = input.credentials
+      this.cancellation = input.cancellation
       if (!options.headers) {
         this.headers = new Headers(input.headers)
       }
@@ -280,6 +291,7 @@
     }
 
     this.credentials = options.credentials || this.credentials || 'omit'
+    this.cancellation = options.cancellation || this.cancellation
     if (options.headers || !this.headers) {
       this.headers = new Headers(options.headers)
     }
@@ -413,6 +425,13 @@
       }
 
       xhr.open(request.method, request.url, true)
+
+      if (request.cancellation) {
+        request.cancellation.then(function() {
+          xhr.abort()
+          reject(new CancelError('Request cancelled'))
+        })
+      }
 
       if (request.credentials === 'include') {
         xhr.withCredentials = true
