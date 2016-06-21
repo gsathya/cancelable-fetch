@@ -1,18 +1,15 @@
 (function(self) {
   'use strict';
 
-  // if (self.fetch) {
-  //   return
-  // }
+  if (self.fetch) {
+    return
+  }
 
   function CancelError(msg) {
     this.name = 'CancelError'
     this.msg = msg || this.name
-    this.stack = (new Error()).stack
   }
 
-  CancelError.prototype = Object.create(Error.prototype)
-  CancelError.prototype.constructor = CancelError;
   self.CancelError = CancelError;
 
   var support = {
