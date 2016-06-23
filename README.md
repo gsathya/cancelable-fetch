@@ -124,6 +124,17 @@ fetch('/avatars', {
 })
 ```
 
+### Cancel
+
+```javascript
+var cancel, cancellation = new Promise(resolve => cancel = resolve)
+fetch('https://api.github.com', {cancellation})
+  .then((response) => useResponse(response))
+
+cancellation.then(() => doSomeCleanup())
+cancelButton.onclick = () => cancel()
+```
+
 ### Caveats
 
 The `fetch` specification differs from `jQuery.ajax()` in mainly two ways that
