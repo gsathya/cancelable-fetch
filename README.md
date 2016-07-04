@@ -1,3 +1,7 @@
+# Warning
+
+This is just a scratchpad, and does not represent [@v8](https://github.com/v8/)'s thoughts on this.
+
 # window.fetch polyfill
 
 This project adheres to the [Open Code of Conduct][code-of-conduct]. By participating, you are expected to uphold this code.
